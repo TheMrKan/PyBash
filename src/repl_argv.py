@@ -15,6 +15,9 @@ class REPLArgvRunner:
         while True:
             try:
                 line = input("> ")
+                if not line.strip():
+                    continue
+
                 parsed_args = shlex.split(line)
 
                 with self.__with_argv(parsed_args):
@@ -37,6 +40,6 @@ class REPLArgvRunner:
 
             yield
         finally:
-            while len(args) > 1:
+            while len(sys.argv) > 1:
                 sys.argv.pop()
             sys.argv.extend(stack[::-1])
