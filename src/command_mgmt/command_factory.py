@@ -1,5 +1,4 @@
-from typing import Callable, TypeVar
-from functools import wraps
+from typing import TypeVar
 
 from src.command_mgmt.base_command import BaseCommand
 
@@ -15,12 +14,3 @@ class CommandFactory[T]:
 
     def __call__(self) -> T:
         return self.cmd_type()
-
-    def create_call_wrapper(self) -> Callable:
-        tmp_instance = self()
-
-        @wraps(tmp_instance.__call__)    # type: ignore
-        def wrapper(*args, **kwargs):
-            return self()(*args, **kwargs)
-
-        return wrapper

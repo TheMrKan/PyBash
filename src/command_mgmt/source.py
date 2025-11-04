@@ -5,7 +5,7 @@ import importlib
 from src.command_mgmt.base_command import BaseCommand
 
 
-class DefaultSource:
+class DefaultCommandSource:
 
     commands: list[type[BaseCommand]]
 

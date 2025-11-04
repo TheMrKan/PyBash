@@ -1,8 +1,8 @@
 import typer
 
 from src.command_mgmt.command_factory import CommandFactory
-from src.command_mgmt.source import DefaultSource
-from src.command_mgmt.base_command import BaseCommand
+from src.command_mgmt.source import DefaultCommandSource
+from src.command_mgmt.executor import CommandExecutor
 
 
 app: typer.Typer
@@ -19,13 +19,11 @@ def build_app() -> typer.Typer:
 def __register_commands(_app: typer.Typer):
     _app.command(" ")(lambda: None)
 
-    source = DefaultSource()
+    source = DefaultCommandSource()
     source.load_commands()
 
+    executor = CommandExecutor()
+
     for cmd_class in source.commands:
-        __register_command(_app, cmd_class)
-
-
-def __register_command(_app: typer.Typer, cmd_class: type[BaseCommand]):
-    factory = CommandFactory(cmd_class)
-    _app.command(cmd_class.NAME)(factory.create_call_wrapper())
+        factory = CommandFactory(cmd_class)
+        _app.command(cmd_class.NAME)(executor.create_call_wrapper(factory))
