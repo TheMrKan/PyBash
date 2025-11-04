@@ -16,7 +16,7 @@ class REPLArgvRunner:
 
     @staticmethod
     def __get_prompt():
-        return f"[blue]{os.getcwd()} [/blue]> "
+        return f"[blue]{os.getcwd()} [/blue]>>> "
 
     def run(self):
         while True:

@@ -1,7 +1,7 @@
 from typing import Callable
 from functools import wraps
-import traceback
 from rich import print
+import logging
 
 from src.command_mgmt.command_factory import CommandFactory
 from src.command_mgmt.base_command import BaseCommand
@@ -10,16 +10,21 @@ from src.command_mgmt.exceptions import CommandExecutionError
 
 class CommandExecutor:
 
-    def execute_command(self, command: BaseCommand, *args, **kwargs):
+    __logger: logging.Logger
 
+    def __init__(self):
+        self.__logger = logging.getLogger(self.__class__.__name__)
+
+    def execute_command(self, command: BaseCommand, *args, **kwargs):
         try:
             command(*args, **kwargs)
         except CommandExecutionError as e:
-            print(f"[red]ERROR >>> [/red]{e}")
+            self.__logger.error(str(e))
+            print(f"[red]ERROR >>> [/red]{str(e)}")
             raise SystemExit(1)
         except Exception as e:
+            self.__logger.exception(f"An error occured during execution of command '{command.NAME}' with args {args} and kwargs {kwargs}", exc_info=e)
             print(f"[red]An error occured during execution of command '{command.NAME}' with args {args} and kwargs {kwargs}[/red]")
-            traceback.print_exception(e)
             raise SystemExit(1)
 
     def create_call_wrapper(self, factory: CommandFactory) -> Callable:
