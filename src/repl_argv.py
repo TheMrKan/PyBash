@@ -1,6 +1,7 @@
 import shlex
 import contextlib
 import sys
+import time
 from typing import Callable
 
 
@@ -25,6 +26,8 @@ class REPLArgvRunner:
                         self.__func()
                     except SystemExit:
                         pass
+
+                time.sleep(0.05)
 
             except KeyboardInterrupt:
                 break
