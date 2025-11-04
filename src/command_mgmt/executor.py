@@ -1,6 +1,7 @@
 from typing import Callable
 from functools import wraps
 import traceback
+from rich import print
 
 from src.command_mgmt.command_factory import CommandFactory
 from src.command_mgmt.base_command import BaseCommand
@@ -14,10 +15,10 @@ class CommandExecutor:
         try:
             command(*args, **kwargs)
         except CommandExecutionError as e:
-            print(f"ERROR >>> {e}")
+            print(f"[red]ERROR >>> [/red]{e}")
             raise SystemExit(1)
         except Exception as e:
-            print(f"An error occured during execution of command '{command.NAME}' with args {args} and kwargs {kwargs}")
+            print(f"[red]An error occured during execution of command '{command.NAME}' with args {args} and kwargs {kwargs}[/red]")
             traceback.print_exception(e)
             raise SystemExit(1)
 

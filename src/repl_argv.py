@@ -1,8 +1,10 @@
 import shlex
 import contextlib
 import sys
+import os
 import time
 from typing import Callable
+from rich import print
 
 
 class REPLArgvRunner:
@@ -12,10 +14,15 @@ class REPLArgvRunner:
     def __init__(self, func: Callable):
         self.__func = func
 
+    @staticmethod
+    def __get_prompt():
+        return f"[blue]{os.getcwd()} [/blue]> "
+
     def run(self):
         while True:
             try:
-                line = input("> ")
+                print(self.__get_prompt(), end="")
+                line = input()
                 if not line.strip():
                     continue
 
