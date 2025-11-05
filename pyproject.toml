@@ -1,7 +1,7 @@
 [project]
-name = "labs"
+name = "PyBash"
 version = "0.1.0"
-description = "Add your description here"
+description = "Simple Bash-like Python shell"
 requires-python = ">=3.12"
 dependencies = [
     "pre-commit>=4.3.0",

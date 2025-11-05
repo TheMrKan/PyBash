@@ -6,6 +6,10 @@ from src.command_mgmt.exceptions import CommandExecutionError
 
 
 class CommandCd(BaseCommand):
+    """
+    Переходит в указанную директорию.
+    """
+
     NAME = 'cd'
 
     def __call__(self, path: Path):

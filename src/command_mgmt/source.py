@@ -7,6 +7,9 @@ from src.command_mgmt.base_command import BaseCommand
 
 
 class DefaultCommandSource:
+    """
+    Источник команд из src.commands
+    """
 
     commands: list[type[BaseCommand]]
 
@@ -17,6 +20,9 @@ class DefaultCommandSource:
         self.__logger = logging.getLogger(self.__class__.__name__)
 
     def load_commands(self):
+        """
+        Импортирует все команды из src.commands и добавляет их в self.commands
+        """
         import src.commands
         self.commands.clear()
 
