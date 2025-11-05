@@ -5,9 +5,9 @@ import logging
 def __setup_logging():
     if len(sys.argv) > 1 and sys.argv[1] == '--debug':
         level = logging.DEBUG
+        sys.argv.remove("--debug")
     else:
         level = logging.INFO
-    sys.argv.remove("--debug")
 
     file_handler = logging.FileHandler(filename="../shell.log", encoding="utf-8")
     file_handler.setLevel(logging.DEBUG)

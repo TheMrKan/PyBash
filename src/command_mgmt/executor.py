@@ -18,6 +18,7 @@ class CommandExecutor:
     def execute_command(self, command: BaseCommand, *args, **kwargs):
         try:
             command(*args, **kwargs)
+            self.__logger.info(f"OK")
         except CommandExecutionError as e:
             self.__logger.error(str(e))
             print(f"[red]ERROR >>> [/red]{str(e)}")
