@@ -27,17 +27,20 @@ class FileSystemService:
 
     @staticmethod
     def copy(source: Path, destination: Path,
-             recursive: bool = False, override_confirmed: bool = False):
+             recursive: bool = False, override: bool = False):
 
-        overriding = destination.is_file() or (destination.is_dir() and (destination / source).is_file())
-        if overriding and not override_confirmed:
-            raise ConfirmationRequiredError("Destination file already exists, 'override_confirmed' must be True")
+        overriding = destination.is_file() or (destination.is_dir() and (destination / source.name).exists())
+        if overriding and not override:
+            raise ConfirmationRequiredError("Destination file already exists, 'override' must be True")
 
         if source.is_dir() and not recursive:
             raise FlagRequiredError(f"'{source.name}' is a directory, 'recursive' must be True")
 
         if source.is_dir():
-            shutil.copytree(source, destination / source, dirs_exist_ok=True)
+            if destination.is_dir():
+                shutil.copytree(source, destination / source.name, dirs_exist_ok=True)
+            else:
+                shutil.copytree(source, destination, dirs_exist_ok=True)
         else:
             shutil.copy(source, destination)
 
@@ -53,8 +56,21 @@ class FileSystemService:
             except ConfirmationRequiredError as e:
                 confirmed = yield source, e
                 if confirmed:
-                    cls.copy(source, destination, recursive=recursive, override_confirmed=True)
+                    cls.copy(source, destination, recursive=recursive, override=True)
             except FlagRequiredError as e:
                 yield source, e
             except OSError as e:
                 yield source, e
+
+    @staticmethod
+    def move(source: Path, destination: Path, override: bool = False):
+
+        if destination.is_dir():
+            overriding = (destination / source.name).exists()
+        else:
+            overriding = destination.exists()
+
+        if overriding and not override:
+            raise FlagRequiredError("Destination already exists, 'override' must be True")
+
+        shutil.move(source, destination)
