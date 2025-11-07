@@ -30,7 +30,7 @@ class CommandLs(BaseCommand):
 
         try:
             if verbose:
-                self.__list_verbose(str(path), source)
+                self.__list_verbose(str(path.absolute()), source)
             else:
                 self.__list_short(source)
         except OSError as e:
