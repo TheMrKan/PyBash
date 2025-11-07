@@ -34,7 +34,7 @@ class FileSystemService:
             return True
 
         # для Windows
-        if path.stat().st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN:
+        if hasattr(path.stat(), "st_file_attributes") and path.stat().st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN:
             return True
 
         return False
@@ -138,9 +138,13 @@ class FileSystemService:
         Иными словами, исключение если 'path' находится внутри 'potential_parent'.
         :raises OSError: 'potential_parent' является одним из родителей 'path'
         """
-        while not path.parent.samefile(path):
+
+        while True:
             if path.samefile(potential_parent):
                 raise OSError("Operation is not allowed with parent directory.")
+
+            if path.parent.samefile(path):
+                break
 
             path = path.parent
 
