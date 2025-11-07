@@ -1,6 +1,7 @@
 from pathlib import Path
 import shutil
 import stat
+import os
 from typing import Generator, Any
 
 
@@ -74,3 +75,29 @@ class FileSystemService:
             raise FlagRequiredError("Destination already exists, 'override' must be True")
 
         shutil.move(source, destination)
+
+    @classmethod
+    def remove(cls, item: Path, recursive: bool = False):
+        cls.__assert_is_not_anchor(item)
+        cls.__assert_is_not_parent(item, Path.cwd())
+
+        if item.is_dir() and any(item.iterdir()) and not recursive:
+            raise FlagRequiredError("Can't remove a non-empty directory with 'recursive' = False.")
+
+        if item.is_dir():
+            shutil.rmtree(item)
+        else:
+            os.remove(item)
+
+    @staticmethod
+    def __assert_is_not_parent(potential_parent: Path, path: Path):
+        while not path.parent.samefile(path):
+            if path.samefile(potential_parent):
+                raise OSError("Operation is not allowed with parent directory.")
+
+            path = path.parent
+
+    @staticmethod
+    def __assert_is_not_anchor(path: Path):
+        if path.samefile(path.anchor):
+            raise OSError("Operation is not allowed with root path.")
