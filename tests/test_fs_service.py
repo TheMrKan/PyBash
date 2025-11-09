@@ -170,5 +170,11 @@ class TestRemove:
 
     def test_recursive_confirmed(self, fake_files, asserts):
         path = Path("/tmp/dir1")
-        FileSystemService.remove(path, recursive=True)
+        with pytest.raises(ConfirmationRequiredError):
+            FileSystemService.remove(path, recursive=True)
+        assert path.exists()
+
+    def test_directory_confirmed(self, fake_files, asserts):
+        path = Path("/tmp/dir1")
+        FileSystemService.remove(path, recursive=True, confirmed=True)
         assert not path.exists()

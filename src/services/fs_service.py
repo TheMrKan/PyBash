@@ -114,10 +114,11 @@ class FileSystemService:
         shutil.move(source, destination)
 
     @classmethod
-    def remove(cls, item: Path, recursive: bool = False):
+    def remove(cls, item: Path, recursive: bool = False, confirmed: bool = False):
         """
         Удаляет объект. Удаление директорий только с 'recursive' = True.
         :param recursive: Разрешает удаление непустых директорий.
+        :param confirmed: Разрешает удаление элементов, для которых требуется подтверждение.
         :raises FlagRequiredError: Попытка удаления непустой директории без 'recursive' = True.
         """
         cls.__assert_is_not_anchor(item)
@@ -125,6 +126,10 @@ class FileSystemService:
 
         if item.is_dir() and any(item.iterdir()) and not recursive:
             raise FlagRequiredError("Can't remove a non-empty directory with 'recursive' = False.")
+
+        # по факту дублирует 'recursive', но так написано в ТЗ(
+        if item.is_dir() and not confirmed:
+            raise ConfirmationRequiredError("Can't remove a non-empty directory with 'confirmed' = False.")
 
         if item.is_dir():
             shutil.rmtree(item)
