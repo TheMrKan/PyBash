@@ -23,6 +23,7 @@ class CommandRm(BaseCommand):
                 FileSystemService.remove(item, recursive=recursive)
             except FlagRequiredError:
                 print(f"[yellow]WARNING[/yellow] >>> Omitting '{item}' because '-r' is not specified.")
+                error_occured = True
             except ConfirmationRequiredError:
                 if ask_confirmation(f"Do you want to remove directory '{item}'?"):
                     FileSystemService.remove(item, recursive=recursive, confirmed=True)
