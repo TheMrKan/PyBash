@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import logging
 
 
 class BaseCommand(ABC):
@@ -11,8 +12,10 @@ class BaseCommand(ABC):
     Название команды, по которому она будет вызываться. Без пробелов и спец символов, желательно в нижнем регистре.
     """
 
-    def __init__(self):
-        pass
+    _logger: logging.Logger
+
+    def __init__(self, logger: logging.Logger):
+        self._logger = logger
 
     @abstractmethod
     def __call__(self, *args, **kwargs):
